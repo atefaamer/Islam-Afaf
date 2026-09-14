@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 // (e.g. https://username.github.io/repo-name/) without extra config.
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/Islam-Afaf/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
