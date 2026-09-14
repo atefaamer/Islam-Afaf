@@ -4,17 +4,17 @@ const PANELS = [
   {
     number: '01',
     label: 'THE BEGINNING',
-    src: '/images/image.png',
+    src: './images/image.png',
   },
   {
     number: '02',
     label: 'THE MOMENT',
-    src: '/images/image3.png',
+    src: './images/image3.png',
   },
   {
     number: '03',
     label: 'FOREVER',
-    src: '/images/image2.png',
+    src: './images/image2.png',
   },
 ]
 
