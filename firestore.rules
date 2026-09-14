@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /wishes/{wishId} {
+      // Anyone can read the messages and any replies.
+      allow read: if true;
+
+      // Any signed-in visitor (guests get an anonymous account
+      // automatically) can post a message, but must include a name.
+      // Locked to exactly these fields — tier/role (used for highlighting
+      // special messages) can never be set this way, only by editing the
+      // document directly in the Firebase Console yourself.
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['name', 'message', 'likes', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 500
+        && request.resource.data.likes == 0
+        && request.resource.data.createdAt is number;
+
+      // Only the couple's real accounts (signed in with email + password,
+      // never an anonymous guest account) may add or edit a reply — and
+      // only the reply fields, nothing else on the message can change.
+      // IMPORTANT: replace both emails below with the exact addresses of
+      // the two Firebase accounts you create (see README).
+      allow update: if request.auth != null
+        && (request.auth.token.email == 'atefaamer5@gmail.com'
+            || request.auth.token.email == 'atefaamer7@gmail.com')
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply', 'repliedAt', 'repliedBy']);
+
+      allow delete: if request.auth != null
+        && (request.auth.token.email == 'atefaamer5@gmail.com'
+            || request.auth.token.email == 'atefaamer7@gmail.com');
+    }
+
+    // Simple site-wide visit counter. Anyone can read it; any signed-in
+    // visitor (including anonymous guests) can bump it by exactly 1, or
+    // create it at 1 if this is the very first visit ever.
+    match /stats/visitors {
+      allow read: if true;
+      allow create: if request.auth != null && request.resource.data.count == 1;
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+        && request.resource.data.count == resource.data.count + 1;
+      allow delete: if false;
+    }
+  }
+}
