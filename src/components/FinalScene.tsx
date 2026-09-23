@@ -37,6 +37,17 @@ export default function FinalScene() {
       </motion.p>
 
       <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1.1, duration: 0.8 }}
+        dir="ltr"
+        className="font-display text-xs tracking-widest2 text-paper/40"
+      >
+        {WEDDING_CONFIG.venueName}
+      </motion.p>
+
+      <motion.p
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
