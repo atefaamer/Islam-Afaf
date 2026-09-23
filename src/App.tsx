@@ -10,15 +10,17 @@ import SecretTrigger from './components/SecretTrigger'
 import ScrollHint from './components/ScrollHint'
 import HeroSplit from './components/HeroSplit'
 import VerseScene from './components/VerseScene'
-import ImageSequence from './components/ImageSequence'
-import DateMorph from './components/DateMorph'
-import InfoEditorial from './components/InfoEditorial'
-import LocationInteractive from './components/LocationInteractive'
+import MemoryGallery from './components/MemoryGallery'
 import MessageWall from './components/MessageWall'
 import MemoriesHuge from './components/MemoriesHuge'
-import MemoryGallery from './components/MemoryGallery'
 import FinalScene from './components/FinalScene'
 
+/**
+ * النسخة المختصرة — ذكرى بس:
+ *   الاسمين ← الآية ← الصور ← كلام الضيوف ← بقالنا كام يوم ← الختام
+ * المشاهد الطويلة اللي اتشالت (تاريخ/مكان/تفاصيل/كشف سينمائي)
+ * لسه موجودة في تاريخ الجيت لو حبيت ترجّعها.
+ */
 export default function App() {
   const [openingDone, setOpeningDone] = useState(false)
   const sound = useSoundEngine()
@@ -42,10 +44,6 @@ export default function App() {
 
           <HeroSplit />
           <VerseScene />
-          <ImageSequence />
-          <DateMorph />
-          <InfoEditorial />
-          <LocationInteractive />
           <MemoryGallery />
           <MessageWall />
           <MemoriesHuge />

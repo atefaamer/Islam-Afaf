@@ -48,9 +48,6 @@ export default function HeroSplit() {
           <p className="font-display text-xs tracking-widest2 text-accent-light">
             {WEDDING_CONFIG.dateFull} / {WEDDING_CONFIG.yearShort}
           </p>
-          <p className="font-display text-[10px] tracking-widest2 text-paper/40">
-            {WEDDING_CONFIG.venueName}
-          </p>
         </motion.div>
 
         {/* Revealed inside the widening gap between the names */}

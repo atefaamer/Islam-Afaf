@@ -78,10 +78,6 @@ export const MEMORY_CONFIG = {
   // --- المشهد الأول: اللي بيتقال بين الاسمين وقت السكرول ---
   heroRevealEn: 'SINCE THAT NIGHT',
 
-  // --- تفاصيل الليلة ---
-  detailsKickerEn: 'THE NIGHT',
-  detailsIntroAr: 'الليلة اللي عدّت وبقيت ذكرى — دي كل تفاصيلها',
-
   // --- ألبوم الصور (الصور نفسها في src/data/gallery.ts) ---
   galleryKickerEn: 'OUR MEMORIES',
   galleryTitleAr: 'ذكرياتنا',
