@@ -15,7 +15,8 @@ import DateMorph from './components/DateMorph'
 import InfoEditorial from './components/InfoEditorial'
 import LocationInteractive from './components/LocationInteractive'
 import MessageWall from './components/MessageWall'
-import CountdownHuge from './components/CountdownHuge'
+import MemoriesHuge from './components/MemoriesHuge'
+import MemoryGallery from './components/MemoryGallery'
 import FinalScene from './components/FinalScene'
 
 export default function App() {
@@ -45,8 +46,9 @@ export default function App() {
           <DateMorph />
           <InfoEditorial />
           <LocationInteractive />
+          <MemoryGallery />
           <MessageWall />
-          <CountdownHuge />
+          <MemoriesHuge />
           <FinalScene />
         </main>
       )}

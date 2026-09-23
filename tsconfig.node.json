@@ -4,7 +4,13 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    // بنطلع ملفات الفحص بس في node_modules/.tmp — عشان tsc مايولّدش
+    // vite.config.js جنب vite.config.ts (لو اتولّد بيبقى هو اللي vite
+    // بيقراه ويتجاهل ملف الـ ts الأصلي).
+    "emitDeclarationOnly": true,
+    "declarationDir": "./node_modules/.tmp/types",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
   },
   "include": ["vite.config.ts"]
 }

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { WEDDING_CONFIG } from '../types'
+import { MEMORY_CONFIG, WEDDING_CONFIG } from '../types'
 
 export default function HeroSplit() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -59,7 +59,7 @@ export default function HeroSplit() {
           className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4"
         >
           <p className="font-display text-[11px] tracking-widest2 text-paper/60" dir="ltr">
-            A NEW CHAPTER
+            {MEMORY_CONFIG.heroRevealEn}
           </p>
           <p className="font-display text-2xl text-accent sm:text-3xl" dir="ltr">
             {WEDDING_CONFIG.dateNumeric}

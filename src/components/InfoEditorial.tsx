@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { WEDDING_CONFIG } from '../types'
+import { MEMORY_CONFIG, WEDDING_CONFIG } from '../types'
 
 function Row({
   label,
@@ -35,6 +35,29 @@ export default function InfoEditorial() {
   return (
     <section className="relative min-h-screen bg-ink px-6 py-28 sm:px-16 sm:py-40">
       <div className="mx-auto max-w-3xl">
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8 }}
+          dir="ltr"
+          className="font-display text-xs tracking-widest2 text-accent"
+        >
+          {MEMORY_CONFIG.detailsKickerEn}
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mt-5 max-w-lg font-arabic text-2xl leading-relaxed text-paper/80 sm:text-3xl"
+        >
+          {MEMORY_CONFIG.detailsIntroAr}
+        </motion.p>
+
+        <div className="mt-16" />
+
         <Row
           label="WHEN"
           value={`${WEDDING_CONFIG.dateFull} 20${WEDDING_CONFIG.yearShort}`}
