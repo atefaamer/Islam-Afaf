@@ -22,6 +22,7 @@ const ROTATIONS = [-3, 2, -1.5, 3, 0, -2]
 
 export default function MessageWall() {
   const [messages, setMessages] = useState<WishMessage[]>([])
+  const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // --- Couple auth state: which of the two (if either) is signed in ---
@@ -100,6 +101,7 @@ export default function MessageWall() {
             !(m.reply && m.reply.trim().length > 0)
         )
         setMessages([...dbPinned, ...pinned, ...tiered, ...replied, ...rest])
+        setLoaded(true)
       },
       () => setError('تعذر تحميل الرسائل حالياً.')
     )
@@ -340,7 +342,7 @@ export default function MessageWall() {
           })}
         </AnimatePresence>
 
-        {messages.length === 0 && !error && (
+        {loaded && messages.length === 0 && !error && (
           <p className="font-body text-sm text-paper/30">{MEMORY_CONFIG.wallEmptyAr}</p>
         )}
       </div>
