@@ -47,7 +47,7 @@ export const WEDDING_CONFIG = {
   isoDateTime: '2026-09-21T21:00:00',
   mapsUrl: 'https://maps.google.com/?q=Marriott+Zagazig',
   mapsEmbedSrc: 'https://maps.google.com/maps?q=Zagazig%2C+Egypt&t=&z=13&ie=UTF8&iwloc=&output=embed',
-  secretMessage: 'إنت من الناس اللي كنا مستنيينهم',
+  secretMessage: 'كان يوم جميل… وكان أجمل بوجودك 🤍',
   verseText: 'ومن آياته أن خلق لكم من أنفسكم أزواجاً لتسكنوا إليها وجعل بينكم مودة ورحمة',
   verseRef: 'الروم ٢١',
   // Must exactly match the Firebase accounts you create for the groom and
