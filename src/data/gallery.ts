@@ -1,5 +1,5 @@
 export interface GalleryPhoto {
-  /** مسار الصورة — حطّها في public/photos/ واستخدم مسار نسبي زي './photos/05.jpg' */
+  /** مسار الصورة — حطّها في public/photos/ واستخدم مسار نسبي زي './photos/04.jpg' */
   src: string
   /** العنوان الكبير اللي بيظهر تحت الصورة (بالعربي) */
   caption: string
@@ -10,35 +10,32 @@ export interface GalleryPhoto {
 }
 
 /**
- * ألبوم الذكريات — الترتيب هنا هو نفس ترتيب ظهور الصور.
+ * ألبوم الذكريات — دلوقتي 3 صور بس.
  *
- * طريقة إضافة صورة جديدة:
- *   1) حطّ الصورة في فولدر public/photos/  (اسمها مثلاً 05.jpg)
- *   2) ضيف سطر هنا:  { src: './photos/05.jpg', caption: 'أول خروجة' }
+ * عايز تحط صور الفرح؟ أسهل طريقة:
+ *   1) سمّي صورك 01.jpg و 02.jpg و 03.jpg وحطها في public/photos/
+ *      (يعني تستبدل اللي موجود — بنفس الأسماء مش محتاج تعدّل أي كود).
+ *   2) لو عايز تزوّد عن 3: حط الرابعة باسم 04.jpg وضيف سطر زي ده تحت:
  *
- * ملاحظة: الأسماء اللي تحت دي مقترحة — عدّلها لأي حاجة تفتكروها إنتو.
+ *        { src: './photos/04.jpg', caption: 'أول رقصة', sub: 'OUR FIRST DANCE' },
+ *
+ * الترتيب هنا هو نفسه ترتيب ظهور الصور.
  */
 export const GALLERY: GalleryPhoto[] = [
   {
     src: './photos/01.jpg',
-    caption: 'الخاتم',
-    sub: 'THE RING',
-    alt: 'إيد إسلام وعفاف والخاتم',
-  },
-  {
-    src: './photos/02.jpg',
     caption: 'يوم ما وعدنا بعض',
     sub: 'THE PROMISE',
     alt: 'إسلام وعفاف في يوم الخطوبة',
   },
   {
-    src: './photos/03.jpg',
+    src: './photos/02.jpg',
     caption: 'وأحنا راجعين',
     sub: 'ON OUR WAY',
     alt: 'سيلفي لإسلام وعفاف في العربية',
   },
   {
-    src: './photos/04.jpg',
+    src: './photos/03.jpg',
     caption: 'قعدتنا المفضلة',
     sub: 'JUST US',
     alt: 'إسلام وعفاف في قعدة عادية',

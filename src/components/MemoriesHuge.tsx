@@ -61,7 +61,6 @@ export default function MemoriesHuge() {
         {String(time.hours).padStart(2, '0')}:{String(time.minutes).padStart(2, '0')}:
         {String(time.seconds).padStart(2, '0')}
       </p>
-      <p className="mt-1 font-body text-[10px] text-paper/20">ساعة : دقيقة : ثانية</p>
     </section>
   )
 }

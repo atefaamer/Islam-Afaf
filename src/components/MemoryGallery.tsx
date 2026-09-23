@@ -103,7 +103,6 @@ export default function MemoryGallery() {
           ))}
         </div>
 
-        <p className="mt-6 text-center font-body text-[11px] text-paper/25">{MEMORY_CONFIG.galleryHintAr}</p>
       </div>
 
       {/* الصورة كبيرة */}

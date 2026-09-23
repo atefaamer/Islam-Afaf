@@ -82,7 +82,6 @@ export const MEMORY_CONFIG = {
   galleryKickerEn: 'OUR MEMORIES',
   galleryTitleAr: 'ذكرياتنا',
   galleryIntroAr: 'صور من يومنا ومن أيامنا… كل صورة ليها حكاية عندنا',
-  galleryHintAr: 'دوس على أي صورة تكبر',
 
   // --- حائط الرسائل ---
   wallKickerEn: 'LEAVE A MEMORY',
