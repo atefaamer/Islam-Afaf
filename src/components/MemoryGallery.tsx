@@ -30,6 +30,8 @@ export default function MemoryGallery() {
   }, [openIndex, close, step])
 
   const current = openIndex === null ? null : GALLERY[openIndex]
+  const currentIsArabic = current ? /[\u0600-\u06FF]/.test(current.caption) : false
+  const introIsArabic = /[\u0600-\u06FF]/.test(MEMORY_CONFIG.galleryIntro)
 
   return (
     <section className="relative bg-ink px-6 py-28 sm:px-16 sm:py-40">
@@ -60,47 +62,72 @@ export default function MemoryGallery() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.35 }}
-          className="mx-auto mt-5 max-w-md text-center font-body text-sm leading-relaxed text-paper/50"
+          dir={introIsArabic ? 'rtl' : 'ltr'}
+          className={
+            introIsArabic
+              ? 'mx-auto mt-5 max-w-md text-center font-body text-sm leading-relaxed text-paper/50'
+              : 'mx-auto mt-5 max-w-md text-center font-display text-xs tracking-[0.25em] leading-loose text-paper/50'
+          }
         >
-          {MEMORY_CONFIG.galleryIntroAr}
+          {MEMORY_CONFIG.galleryIntro}
         </motion.p>
 
         {/* Masonry عبر CSS columns — كل صورة بتحفظ نسبها الطبيعية */}
         <div className="mt-16 columns-1 gap-8 sm:columns-2">
-          {GALLERY.map((photo, i) => (
-            <motion.figure
-              key={photo.src}
-              initial={{ opacity: 0, y: 34 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.9, delay: (i % 2) * 0.12 }}
-              className="mb-10 break-inside-avoid"
-            >
-              <button
-                type="button"
-                onClick={() => setOpenIndex(i)}
-                data-cursor-hover
-                aria-label={`تكبير صورة: ${photo.caption}`}
-                className="group block w-full overflow-hidden bg-ink"
+          {GALLERY.map((photo, i) => {
+            const isArabic = /[\u0600-\u06FF]/.test(photo.caption)
+            return (
+              <motion.figure
+                key={`${photo.caption}-${i}`}
+                initial={{ opacity: 0, y: 34 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.9, delay: (i % 2) * 0.12 }}
+                className="mb-10 break-inside-avoid"
               >
-                <img
-                  src={photo.src}
-                  alt={photo.alt ?? photo.caption}
-                  loading="lazy"
-                  className="w-full scale-[1.01] object-cover opacity-90 transition duration-[900ms] ease-out group-hover:scale-[1.04] group-hover:opacity-100"
-                  style={{ filter: 'saturate(0.8) sepia(0.12)' }}
-                />
-              </button>
-              <figcaption className="mt-4 flex items-baseline justify-between gap-4 border-t border-paper/10 pt-3">
-                <span className="font-arabic text-lg text-paper/90">{photo.caption}</span>
-                {photo.sub && (
-                  <span dir="ltr" className="shrink-0 font-display text-[10px] tracking-widest2 text-accent">
-                    {photo.sub}
-                  </span>
+                {photo.src ? (
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(i)}
+                    data-cursor-hover
+                    aria-label={`تكبير صورة: ${photo.caption}`}
+                    className="group block w-full overflow-hidden bg-ink"
+                  >
+                    <img
+                      src={photo.src}
+                      alt={photo.alt ?? photo.caption}
+                      loading="lazy"
+                      className="w-full scale-[1.01] object-cover opacity-90 transition duration-[900ms] ease-out group-hover:scale-[1.04] group-hover:opacity-100"
+                      style={{ filter: 'saturate(0.8) sepia(0.12)' }}
+                    />
+                  </button>
+                ) : (
+                  /* براواز فاضي محجوز للصورة — لحد ما الصور توصل */
+                  <div
+                    aria-label={photo.alt ?? photo.caption}
+                    className="aspect-[4/5] w-full border border-paper/10 bg-paper/[0.02]"
+                  />
                 )}
-              </figcaption>
-            </motion.figure>
-          ))}
+                <figcaption className="mt-4 flex items-baseline justify-between gap-4 border-t border-paper/10 pt-3">
+                  <span
+                    dir={isArabic ? 'rtl' : 'ltr'}
+                    className={
+                      isArabic
+                        ? 'font-arabic text-lg text-paper/90'
+                        : 'font-display text-sm tracking-[0.2em] text-paper/90'
+                    }
+                  >
+                    {photo.caption}
+                  </span>
+                  {photo.sub && (
+                    <span dir="ltr" className="shrink-0 font-display text-[10px] tracking-widest2 text-accent">
+                      {photo.sub}
+                    </span>
+                  )}
+                </figcaption>
+              </motion.figure>
+            )
+          })}
         </div>
 
       </div>
@@ -144,7 +171,14 @@ export default function MemoryGallery() {
               className="relative z-[1] max-h-[72vh] w-auto max-w-full object-contain shadow-2xl"
             />
 
-            <p className="relative z-[1] mt-6 font-arabic text-xl text-paper sm:text-2xl">
+            <p
+              dir={currentIsArabic ? 'rtl' : 'ltr'}
+              className={
+                currentIsArabic
+                  ? 'relative z-[1] mt-6 font-arabic text-xl text-paper sm:text-2xl'
+                  : 'relative z-[1] mt-6 font-display text-lg tracking-[0.2em] text-paper sm:text-xl'
+              }
+            >
               {current.caption}
             </p>
             <p dir="ltr" className="relative z-[1] mt-2 font-display text-[10px] tracking-widest2 text-accent">

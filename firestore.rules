@@ -26,12 +26,14 @@ service cloud.firestore {
       // Only the couple's real accounts (signed in with email + password,
       // never an anonymous guest account) may add or edit a reply — and
       // only the reply fields, nothing else on the message can change.
+      // pinOrder هو الاستثناء: بيه بيثبت العروسين رسالة في أول الحائط من
+      // الموقع نفسه (زرار الدبوس اللي بيظهر لما يكونوا مسجلين دخول).
       // IMPORTANT: replace both emails below with the exact addresses of
       // the two Firebase accounts you create (see README).
       allow update: if request.auth != null
         && (request.auth.token.email == 'atefaamer5@gmail.com'
             || request.auth.token.email == 'atefaamer7@gmail.com')
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply', 'repliedAt', 'repliedBy']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reply', 'repliedAt', 'repliedBy', 'pinOrder']);
 
       allow delete: if request.auth != null
         && (request.auth.token.email == 'atefaamer5@gmail.com'

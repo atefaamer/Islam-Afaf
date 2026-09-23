@@ -1,10 +1,8 @@
-import { notifyNewMessage } from '../lib/notify'
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogIn, LogOut, Trash2, Star, Heart, Sparkles, Crown } from 'lucide-react'
+import { LogIn, LogOut, Trash2, Star, Heart, Sparkles, Crown, Pin } from 'lucide-react'
 import {
   collection,
-  addDoc,
   query,
   orderBy,
   onSnapshot,
@@ -13,10 +11,9 @@ import {
   deleteDoc,
   Timestamp,
 } from 'firebase/firestore'
-import { db, ensureAnonymousAuth, auth, signInGroom, signOutGroom } from '../firebase'
+import { db, auth, signInGroom, signOutGroom } from '../firebase'
 import type { WishMessage } from '../types'
-import { MEMORY_CONFIG, WEDDING_CONFIG } from '../types'
-import { containsBlockedWords } from '../lib/moderation'
+import { MEMORY_CONFIG, WEDDING_CONFIG, PINNED_WISH_IDS } from '../types'
 
 type Role = 'groom' | 'bride' | null
 
@@ -25,9 +22,6 @@ const ROTATIONS = [-3, 2, -1.5, 3, 0, -2]
 
 export default function MessageWall() {
   const [messages, setMessages] = useState<WishMessage[]>([])
-  const [name, setName] = useState('')
-  const [text, setText] = useState('')
-  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // --- Couple auth state: which of the two (if either) is signed in ---
@@ -59,6 +53,7 @@ export default function MessageWall() {
             repliedBy?: 'groom' | 'bride'
             role?: string
             tier?: 1 | 2 | 3 | 4
+            pinOrder?: number | null
           }
           const createdAt =
             typeof data.createdAt === 'number' ? data.createdAt : data.createdAt?.toMillis?.() ?? Date.now()
@@ -75,9 +70,36 @@ export default function MessageWall() {
             repliedBy: data.repliedBy,
             role: data.role,
             tier: data.tier,
+            pinOrder: typeof data.pinOrder === 'number' ? data.pinOrder : undefined,
           }
         })
-        setMessages(items)
+        // ترتيب الحائط: المثبتة من الموقع (زرار الدبوس، بترتيب التثبيت) ←
+        // المثبتة من الكود (ترتيب PINNED_WISH_IDS في types.ts) ← اللي ليها
+        // tier (الأقل رقم الأول) ← اللي عليها رد من العروسين ← الباقي بالأحدث.
+        const inPinned = (m: WishMessage) => PINNED_WISH_IDS.includes(m.id)
+        const dbPinned = items
+          .filter((m) => m.pinOrder != null)
+          .sort((a, b) => (a.pinOrder ?? 0) - (b.pinOrder ?? 0))
+        const inDbPinned = (m: WishMessage) => m.pinOrder != null
+        const pinned = PINNED_WISH_IDS.map((id) => items.find((m) => m.id === id)).filter(
+          (m): m is WishMessage => m != null && !inDbPinned(m)
+        )
+        const tiered = items
+          .filter((m) => !inDbPinned(m) && !inPinned(m) && m.tier)
+          .sort((a, b) => (a.tier ?? 0) - (b.tier ?? 0) || b.createdAt - a.createdAt)
+        const replied = items
+          .filter(
+            (m) => !inDbPinned(m) && !inPinned(m) && !m.tier && m.reply && m.reply.trim().length > 0
+          )
+          .sort((a, b) => b.createdAt - a.createdAt)
+        const rest = items.filter(
+          (m) =>
+            !inDbPinned(m) &&
+            !inPinned(m) &&
+            !m.tier &&
+            !(m.reply && m.reply.trim().length > 0)
+        )
+        setMessages([...dbPinned, ...pinned, ...tiered, ...replied, ...rest])
       },
       () => setError('تعذر تحميل الرسائل حالياً.')
     )
@@ -94,36 +116,6 @@ export default function MessageWall() {
     })
     return () => unsubscribe()
   }, [])
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault()
-      if (!name.trim() || !text.trim() || submitting) return
-      if (containsBlockedWords(name) || containsBlockedWords(text)) {
-        setError('برجاء الحفاظ على لغة لائقة في رسالتك 🤍')
-        return
-      }
-      setSubmitting(true)
-      setError(null)
-      try {
-        await ensureAnonymousAuth()
-        await addDoc(collection(db, 'wishes'), {
-          name: name.trim().slice(0, 60),
-          message: text.trim().slice(0, 300),
-          likes: 0,
-          createdAt: Date.now(),
-        })
-        notifyNewMessage(name.trim(), text.trim())
-        setName('')
-        setText('')
-      } catch {
-        setError('حدث خطأ أثناء الإرسال. حاول مرة أخرى.')
-      } finally {
-        setSubmitting(false)
-      }
-    },
-    [name, text, submitting]
-  )
 
   const handleLogin = useCallback(
     async (e: React.FormEvent) => {
@@ -176,6 +168,22 @@ export default function MessageWall() {
     }
   }, [role])
 
+  // تثبيت/فك تثبيت رسالة من الموقع نفسه — متاح للعروسين بس (زرار الدبوس).
+  // بيكتب pinOrder على المستند، والقواعد في firestore.rules بتسمح بيه لحسابهم فقط.
+  const handleTogglePin = useCallback(
+    async (wishId: string, current?: number | null) => {
+      if (!role) return
+      try {
+        await updateDoc(doc(db, 'wishes', wishId), {
+          pinOrder: current != null ? null : Date.now(),
+        })
+      } catch {
+        setError('تعذر التثبيت — اتأكد إن قواعد Firestore المحدثة اتنشرت من Firebase Console.')
+      }
+    },
+    [role]
+  )
+
   return (
     <section className="relative min-h-screen bg-ink px-6 py-28 sm:px-16 sm:py-40">
       <motion.p
@@ -188,46 +196,28 @@ export default function MessageWall() {
         {MEMORY_CONFIG.wallKickerEn}
       </motion.p>
 
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 0.8, delay: 0.15 }}
+        className="mt-6 text-center font-arabic text-4xl text-paper sm:text-5xl"
+      >
+        {MEMORY_CONFIG.wallTitleAr}
+      </motion.h2>
+
       <motion.p
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="mx-auto mt-6 max-w-md text-center font-arabic text-xl text-paper/70"
+        transition={{ duration: 0.8, delay: 0.35 }}
+        dir="ltr"
+        className="mx-auto mt-5 max-w-md text-center font-display text-xs tracking-[0.25em] leading-loose text-paper/50"
       >
-        {MEMORY_CONFIG.wallIntroAr}
+        {MEMORY_CONFIG.wallDescEn}
       </motion.p>
 
-      <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-lg flex-col gap-3">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          maxLength={60}
-          required
-          placeholder="اسمك"
-          className="w-full border-b border-paper/25 bg-transparent pb-2 font-arabic text-base text-paper placeholder:text-paper/30 focus:outline-none focus:border-accent"
-        />
-        <div className="flex items-end gap-4 border-b border-paper/25 pb-3">
-          <input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            maxLength={300}
-            required
-            placeholder={MEMORY_CONFIG.wallPlaceholder}
-            className="w-full bg-transparent font-arabic text-lg text-paper placeholder:text-paper/30 focus:outline-none"
-          />
-          <button
-            type="submit"
-            disabled={submitting}
-            data-cursor-hover
-            dir="ltr"
-            className="shrink-0 font-display text-xs tracking-widest2 text-paper transition-colors hover:text-accent disabled:opacity-40"
-          >
-            SEND →
-          </button>
-        </div>
-      </form>
-      {error && <p className="mt-3 text-center font-display text-xs text-paper/40">{error}</p>}
+      {error && <p className="mt-6 text-center font-display text-xs text-paper/40">{error}</p>}
 
       {/* Evolving wall of floating typography */}
       <div className="mx-auto mt-20 flex max-w-4xl flex-wrap items-start justify-center gap-x-6 gap-y-8">
@@ -262,6 +252,19 @@ export default function MessageWall() {
                     className="absolute -top-2 -left-2 text-paper/20 hover:text-red-400"
                   >
                     <Trash2 size={13} />
+                  </button>
+                )}
+                {role && (
+                  <button
+                    onClick={() => handleTogglePin(m.id, m.pinOrder)}
+                    data-cursor-hover
+                    aria-label={m.pinOrder != null ? 'فك تثبيت الرسالة' : 'تثبيت الرسالة في أول الحائط'}
+                    title={m.pinOrder != null ? 'فك التثبيت' : 'تثبيت في الأول'}
+                    className={`absolute -top-2 -right-2 transition-colors ${
+                      m.pinOrder != null ? 'text-accent' : 'text-paper/20 hover:text-accent'
+                    }`}
+                  >
+                    <Pin size={13} className={m.pinOrder != null ? 'fill-accent' : undefined} />
                   </button>
                 )}
                 {m.tier === 1 && <Sparkles size={16} className="mb-1.5 fill-accent text-accent" />}
@@ -342,8 +345,21 @@ export default function MessageWall() {
         )}
       </div>
 
+      {/* ختام دفتر الذكرى — آخر جملة في القسم، مكان فورم الإرسال القديم */}
+      <div className="mx-auto mt-28 h-px w-16 bg-paper/10" />
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2 }}
+        dir="ltr"
+        className="mx-auto mt-8 whitespace-pre-line text-center font-display text-[10px] tracking-widest2 leading-loose text-paper/30"
+      >
+        {MEMORY_CONFIG.wallClosedEn}
+      </motion.p>
+
       {/* Discreet couple login, tucked away — not meant for guests */}
-      <div className="mt-24 flex justify-center">
+      <div className="mt-16 flex justify-center">
         {role ? (
           <button
             onClick={() => signOutGroom()}

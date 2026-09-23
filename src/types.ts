@@ -7,6 +7,10 @@ export interface WishMessage {
   reply?: string
   repliedAt?: number
   repliedBy?: 'groom' | 'bride'
+  // Set automatically when the couple pins a message from the site itself
+  // (the pin button that appears when logged in): timestamp of the pin moment.
+  // Pinned messages show at the top of the wall in pin order. null/undefined = not pinned.
+  pinOrder?: number | null
   // Distinction fields — never set by the submission form or by the couple's
   // login. Set these by hand in Firebase Console (Firestore Database ->
   // wishes -> [pick a message] -> add fields) when you want a message to
@@ -63,13 +67,15 @@ export const WEDDING_CONFIG = {
 // أي component. أي جملة فيها {n} بيتحوّل الرقم فيها لوحده.
 // ---------------------------------------------------------------------------
 export const MEMORY_CONFIG = {
+  // --- الافتتاحية: سطر صغير بيظهر بهدوء تحت التاريخ 21.09 ---
+  openingLineEn: 'A Night We’ll Never Forget',
+
   // --- العدّاد (بقالنا كام يوم مع بعض) ---
   sinceKickerEn: 'SINCE',
   daysLabelEn: 'DAYS TOGETHER',
   sinceDaysAr: 'بقالنا {n} يوم مع بعض',
-  // أول يومين — الكلام بيتظبط أوتوماتيك
+  // أول يوم — الكلام بيتظبط أوتوماتيك
   sinceDaysZeroAr: 'بقالنا ساعات… ودي أول لحظة',
-  sinceDaysOneAr: 'بقالنا يوم واحد… ولسه البداية',
   // (لو حصل وأي حد فتح الموقع قبل الفرح، بيتعامل معاه كعدّاد عادي)
   untilKickerEn: 'UNTIL',
   untilLabelEn: 'DAYS TO GO',
@@ -81,16 +87,30 @@ export const MEMORY_CONFIG = {
   // --- ألبوم الصور (الصور نفسها في src/data/gallery.ts) ---
   galleryKickerEn: 'OUR MEMORIES',
   galleryTitleAr: 'ذكرياتنا',
-  galleryIntroAr: 'صور من يومنا ومن أيامنا… كل صورة ليها حكاية عندنا',
+  galleryIntro: 'The moments that stayed',
 
-  // --- حائط الرسائل ---
-  wallKickerEn: 'LEAVE A MEMORY',
-  wallIntroAr: 'سيبوا ذكرى أو كلمة… هتفضل هنا معانا على طول',
-  wallPlaceholder: 'اكتب ذكرى أو كلمة لإسلام وعفاف…',
-  wallEmptyAr: 'لسه مفيش ذكريات… اكتب أول واحدة',
+  // --- دفتر الذكرى (حائط الرسائل المقفول — أرشيف دائم لكلمات الضيوف) ---
+  wallKickerEn: 'OUR GUESTBOOK',
+  wallTitleAr: 'كلمات من أحبّائنا',
+  wallDescEn: 'Words left for us on a night we’ll always remember',
+  wallClosedEn: 'The guestbook is closed\nThe memories remain',
+  wallEmptyAr: 'مفيش كلمات محفوظة هنا لسه',
 
   // --- المشهد الختامي ---
   finalKickerEn: 'THE NIGHT WE SAID FOREVER',
   finalLineAr: 'كانت أحلى ليلة… ولسه البداية',
   finalThanksAr: 'شكراً لكل واحد كان جزء من يومنا 🤍',
 }
+
+// ---------------------------------------------------------------------------
+// حائط الرسائل: الرسايل اللي في أول الحائط بالترتيب ده بالظبط، ووراهم
+// باقي المجموعات (اللي ليها tier ← اللي عليها رد ← الباقي بالأحدث الأول).
+// الـ ID هو اسم المستند في Firebase Console → Firestore → wishes.
+// الترتيب الحالي اختاره العريس: ريري ← داليا ← ليالي ← عاطففف.
+// ---------------------------------------------------------------------------
+export const PINNED_WISH_IDS: string[] = [
+  'Hyu1x7G7ovuH0yyc973S', // ريري
+  'EAJyDdmMTjLUU9IzfDx7', // Dalia
+  'XrUhUDE1KheZgoSUUQh2', // Layaly
+  'vjsmDoun39Xsgka89k4R', // عاطففف
+]
