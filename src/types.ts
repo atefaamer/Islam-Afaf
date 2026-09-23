@@ -67,6 +67,9 @@ export const MEMORY_CONFIG = {
   sinceKickerEn: 'SINCE',
   daysLabelEn: 'DAYS TOGETHER',
   sinceDaysAr: 'بقالنا {n} يوم مع بعض',
+  // أول يومين — الكلام بيتظبط أوتوماتيك
+  sinceDaysZeroAr: 'بقالنا ساعات… ودي أول لحظة',
+  sinceDaysOneAr: 'بقالنا يوم واحد… ولسه البداية',
   // (لو حصل وأي حد فتح الموقع قبل الفرح، بيتعامل معاه كعدّاد عادي)
   untilKickerEn: 'UNTIL',
   untilLabelEn: 'DAYS TO GO',

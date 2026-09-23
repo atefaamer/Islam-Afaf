@@ -12,10 +12,13 @@ export default function MemoriesHuge() {
   const dayCount = time.totalDays
   const isFuture = time.isFuture
 
-  const arabicLine = (isFuture ? MEMORY_CONFIG.untilDaysAr : MEMORY_CONFIG.sinceDaysAr).replace(
-    '{n}',
-    String(dayCount)
-  )
+  const arabicLine = isFuture
+    ? MEMORY_CONFIG.untilDaysAr.replace('{n}', String(dayCount))
+    : dayCount === 0
+    ? MEMORY_CONFIG.sinceDaysZeroAr
+    : dayCount === 1
+    ? MEMORY_CONFIG.sinceDaysOneAr
+    : MEMORY_CONFIG.sinceDaysAr.replace('{n}', String(dayCount))
 
   // الرقم بيكبر مع الوقت — بنصغّر الخط أوتوماتيك كل ما يزيد عدد الأرقام
   const sizeClass = isFuture
