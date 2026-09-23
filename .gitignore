@@ -3,3 +3,8 @@ dist
 .DS_Store
 *.local
 .env
+
+# ملفات مبنية أوتوماتيك (متتضافش للجيت)
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts

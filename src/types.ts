@@ -47,7 +47,7 @@ export const WEDDING_CONFIG = {
   isoDateTime: '2026-09-21T21:00:00',
   mapsUrl: 'https://maps.google.com/?q=Marriott+Zagazig',
   mapsEmbedSrc: 'https://maps.google.com/maps?q=Zagazig%2C+Egypt&t=&z=13&ie=UTF8&iwloc=&output=embed',
-  secretMessage: 'إنت من الناس اللي كنا مستنيينهم',
+  secretMessage: 'كان يوم جميل… وكان أجمل بوجودك 🤍',
   verseText: 'ومن آياته أن خلق لكم من أنفسكم أزواجاً لتسكنوا إليها وجعل بينكم مودة ورحمة',
   verseRef: 'الروم ٢١',
   // Must exactly match the Firebase accounts you create for the groom and
@@ -55,4 +55,42 @@ export const WEDDING_CONFIG = {
   // the emails hardcoded in firestore.rules. See README -> "رد العروسين".
   groomEmail: 'atefaamer5@gmail.com',
   brideEmail: 'atefaamer7@gmail.com',
+}
+
+// ---------------------------------------------------------------------------
+// «الذكرى» — كل كلام المشاهد الجديدة (العدّاد اللي بيعد من يوم الفرح، ألبوم
+// الصور، تفاصيل الليلة، الختام، وحائط الرسائل). عدّل من هنا من غير ما تلمس
+// أي component. أي جملة فيها {n} بيتحوّل الرقم فيها لوحده.
+// ---------------------------------------------------------------------------
+export const MEMORY_CONFIG = {
+  // --- العدّاد (بقالنا كام يوم مع بعض) ---
+  sinceKickerEn: 'SINCE',
+  daysLabelEn: 'DAYS TOGETHER',
+  sinceDaysAr: 'بقالنا {n} يوم مع بعض',
+  // أول يومين — الكلام بيتظبط أوتوماتيك
+  sinceDaysZeroAr: 'بقالنا ساعات… ودي أول لحظة',
+  sinceDaysOneAr: 'بقالنا يوم واحد… ولسه البداية',
+  // (لو حصل وأي حد فتح الموقع قبل الفرح، بيتعامل معاه كعدّاد عادي)
+  untilKickerEn: 'UNTIL',
+  untilLabelEn: 'DAYS TO GO',
+  untilDaysAr: 'فاضل {n} يوم على الفرح',
+
+  // --- المشهد الأول: اللي بيتقال بين الاسمين وقت السكرول ---
+  heroRevealEn: 'SINCE THAT NIGHT',
+
+  // --- ألبوم الصور (الصور نفسها في src/data/gallery.ts) ---
+  galleryKickerEn: 'OUR MEMORIES',
+  galleryTitleAr: 'ذكرياتنا',
+  galleryIntroAr: 'صور من يومنا ومن أيامنا… كل صورة ليها حكاية عندنا',
+
+  // --- حائط الرسائل ---
+  wallKickerEn: 'LEAVE A MEMORY',
+  wallIntroAr: 'سيبوا ذكرى أو كلمة… هتفضل هنا معانا على طول',
+  wallPlaceholder: 'اكتب ذكرى أو كلمة لإسلام وعفاف…',
+  wallEmptyAr: 'لسه مفيش ذكريات… اكتب أول واحدة',
+
+  // --- المشهد الختامي ---
+  finalKickerEn: 'THE NIGHT WE SAID FOREVER',
+  finalLineAr: 'كانت أحلى ليلة… ولسه البداية',
+  finalThanksAr: 'شكراً لكل واحد كان جزء من يومنا 🤍',
 }

@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore'
 import { db, ensureAnonymousAuth, auth, signInGroom, signOutGroom } from '../firebase'
 import type { WishMessage } from '../types'
-import { WEDDING_CONFIG } from '../types'
+import { MEMORY_CONFIG, WEDDING_CONFIG } from '../types'
 import { containsBlockedWords } from '../lib/moderation'
 
 type Role = 'groom' | 'bride' | null
@@ -58,7 +58,7 @@ export default function MessageWall() {
             repliedAt?: number | Timestamp
             repliedBy?: 'groom' | 'bride'
             role?: string
-            tier?: 1 | 2
+            tier?: 1 | 2 | 3 | 4
           }
           const createdAt =
             typeof data.createdAt === 'number' ? data.createdAt : data.createdAt?.toMillis?.() ?? Date.now()
@@ -109,7 +109,7 @@ export default function MessageWall() {
         await ensureAnonymousAuth()
         await addDoc(collection(db, 'wishes'), {
           name: name.trim().slice(0, 60),
-          message: text.trim().slice(0, 200),
+          message: text.trim().slice(0, 300),
           likes: 0,
           createdAt: Date.now(),
         })
@@ -185,7 +185,17 @@ export default function MessageWall() {
         dir="ltr"
         className="text-center font-display text-xs tracking-widest2 text-accent"
       >
-        LEAVE SOMETHING BEHIND
+        {MEMORY_CONFIG.wallKickerEn}
+      </motion.p>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="mx-auto mt-6 max-w-md text-center font-arabic text-xl text-paper/70"
+      >
+        {MEMORY_CONFIG.wallIntroAr}
       </motion.p>
 
       <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-lg flex-col gap-3">
@@ -201,9 +211,9 @@ export default function MessageWall() {
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            maxLength={200}
+            maxLength={300}
             required
-            placeholder="اكتب كلمة لإسلام وعفاف…"
+            placeholder={MEMORY_CONFIG.wallPlaceholder}
             className="w-full bg-transparent font-arabic text-lg text-paper placeholder:text-paper/30 focus:outline-none"
           />
           <button
@@ -328,7 +338,7 @@ export default function MessageWall() {
         </AnimatePresence>
 
         {messages.length === 0 && !error && (
-          <p className="font-body text-sm text-paper/30">كن أول من يترك كلمة</p>
+          <p className="font-body text-sm text-paper/30">{MEMORY_CONFIG.wallEmptyAr}</p>
         )}
       </div>
 

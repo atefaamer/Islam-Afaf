@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { WEDDING_CONFIG } from '../types'
+import { MEMORY_CONFIG, WEDDING_CONFIG } from '../types'
 
 export default function FinalScene() {
   return (
@@ -12,7 +12,7 @@ export default function FinalScene() {
         dir="ltr"
         className="max-w-xs font-display text-xs tracking-widest2 text-paper/50 sm:text-sm"
       >
-        AND THIS IS WHERE OUR NEXT CHAPTER BEGINS
+        {MEMORY_CONFIG.finalKickerEn}
       </motion.p>
 
       <motion.h2
@@ -48,14 +48,23 @@ export default function FinalScene() {
       </motion.p>
 
       <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1.4, duration: 0.8 }}
+        className="mt-6 font-arabic text-3xl leading-relaxed text-paper sm:text-4xl"
+      >
+        {MEMORY_CONFIG.finalLineAr}
+      </motion.p>
+
+      <motion.p
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-        dir="ltr"
-        className="mt-6 font-display text-lg tracking-wide text-paper"
+        transition={{ delay: 1.8, duration: 0.8 }}
+        className="font-arabic text-base text-paper/60 sm:text-lg"
       >
-        SEE YOU THERE
+        {MEMORY_CONFIG.finalThanksAr}
       </motion.p>
     </section>
   )

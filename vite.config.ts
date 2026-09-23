@@ -10,4 +10,11 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
   },
+  server: {
+    host: true,
+    // بيسمح بفتح المعاينة من أي هوست خارجي (بيئات التطوير السحابية زي
+    // Arena / Codespaces / Gitpod). الإعداد ده بيأثر على `npm run dev` بس
+    // ومش بيدخل في البيلد النهائي.
+    allowedHosts: true,
+  },
 })
