@@ -16,8 +16,6 @@ export default function MemoriesHuge() {
     ? MEMORY_CONFIG.untilDaysAr.replace('{n}', String(dayCount))
     : dayCount === 0
     ? MEMORY_CONFIG.sinceDaysZeroAr
-    : dayCount === 1
-    ? MEMORY_CONFIG.sinceDaysOneAr
     : MEMORY_CONFIG.sinceDaysAr.replace('{n}', String(dayCount))
 
   // الرقم بيكبر مع الوقت — بنصغّر الخط أوتوماتيك كل ما يزيد عدد الأرقام
